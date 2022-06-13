@@ -183,6 +183,13 @@ mapping.register({
         options = {},
         description = "Move cursor right in insert mode",
     },
+    {
+      mode = { "n" },
+      lhs = "<A+\\>",
+      rhs = ":NvimTreeToggle",
+      options = {},
+      description = "Open File Explorer",
+    },
 })
 
 return mapping
