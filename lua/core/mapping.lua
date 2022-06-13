@@ -185,8 +185,8 @@ mapping.register({
     },
     {
       mode = { "n" },
-      lhs = "<A+\\>",
-      rhs = ":NvimTreeToggle",
+      lhs = "<m-\\>",
+      rhs = ":NvimTreeToggle<CR>",
       options = {},
       description = "Open File Explorer",
     },
