@@ -28,7 +28,7 @@ function M.load()
             -- config
             layout_config = {
                 bottom_pane = {
-                    height = 15,
+                    height = 50,
                     preview_cutoff = 100,
                     prompt_position = "bottom",
                 },

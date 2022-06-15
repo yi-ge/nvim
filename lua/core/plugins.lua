@@ -329,7 +329,9 @@ end)()
 local packer = require("packer")
 
 packer.init({
+    max_jobs = 20,
     git = {
+        clone_timeout = 60,
         default_url_format = options.download_source .. "%s",
     },
 })
