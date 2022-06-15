@@ -20,6 +20,7 @@ function M.load()
             M.null_ls.builtins.formatting.gofmt,
             M.null_ls.builtins.formatting.autopep8,
             M.null_ls.builtins.formatting.sqlformat,
+            M.null_ls.builtins.formatting.rustfmt,
             M.null_ls.builtins.formatting.stylua.with({
                 extra_args = {
                     "--indent-type=Spaces",

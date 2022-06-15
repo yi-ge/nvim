@@ -133,6 +133,10 @@ local packer_install_tbl = {
         ptp = "viml",
         event = { "InsertEnter" },
     },
+    ["simrat39/rust-tools.nvim"] = { -- Rust support
+      ft = "rust",
+      requires = { { "nvim-lua/plenary.nvim" } },
+    },
     --[[
 	=====================================
 	 ----- debug adapter protocol ------
@@ -221,6 +225,9 @@ local packer_install_tbl = {
     ["mattn/emmet-vim"] = { -- emmet abbreviation support
         ptp = "viml",
         ft = { "html", "javascript", "typescript", "vue", "xml", "jsx" },
+    },
+    ["rust-lang/rust.vim"] = { -- rust lang support
+      ft = "rust"
     },
     --[[
 	=====================================
