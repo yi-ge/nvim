@@ -133,7 +133,7 @@ local packer_install_tbl = {
         ptp = "viml",
         event = { "InsertEnter" },
     },
-    ["simrat39/rust-tools.nvim"] = { -- Rust support
+    ["yi-ge/rust-tools.nvim"] = { -- Rust support
       ft = "rust",
       requires = { { "nvim-lua/plenary.nvim" } },
     },

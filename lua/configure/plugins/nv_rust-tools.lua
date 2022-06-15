@@ -1,4 +1,4 @@
--- https://github.com/simrat39/rust-tools.nvim
+-- https://github.com/yi-ge/rust-tools.nvim
 local register_buffer_key = require("core.plugins-mapping")
 
 local M = {}
@@ -40,12 +40,21 @@ function M.load()
         end,
       }
 
+      -- Update this path
+      local extension_path = vim.env.HOME .. '/.vscode/extensions/vadimcn.vscode-lldb-1.7.0/'
+      local codelldb_path = extension_path .. 'adapter/codelldb'
+      local liblldb_path = extension_path .. 'lldb/lib/liblldb.dylib'
+
       M.rust_tools.setup({
         -- The "server" property provided in rust-tools setup function are the
         -- settings rust-tools will provide to lspconfig during init.
         -- We merge the necessary settings from nvim-lsp-installer (server:get_default_options())
         -- with the user's own settings (opts).
         server = vim.tbl_deep_extend("force", server:get_default_options(), opts),
+        dap = {
+          adapter = require('rust-tools.dap').get_codelldb_adapter(
+              codelldb_path, liblldb_path)
+        }
       })
 
       server:attach_buffers()

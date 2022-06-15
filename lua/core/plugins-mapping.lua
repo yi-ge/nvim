@@ -1,7 +1,6 @@
 local mapping = require("core.mapping")
 
 local function register_buffer_key(bufnr)
-  vim.notify("执行绑定")
   mapping.register({
     {
       mode = { "n" },
