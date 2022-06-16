@@ -1,5 +1,6 @@
 -- https://github.com/yi-ge/rust-tools.nvim
 local register_buffer_key = require("core.plugins-mapping")
+local global              = require("core.global")
 
 local M = {}
 
@@ -43,7 +44,7 @@ function M.load()
       -- Update this path
       local extension_path = vim.env.HOME .. '/.vscode/extensions/vadimcn.vscode-lldb-1.7.0/'
       local codelldb_path = extension_path .. 'adapter/codelldb'
-      local liblldb_path = extension_path .. 'lldb/lib/liblldb.dylib'
+      local liblldb_path = extension_path .. 'lldb/lib/liblldb.' .. (global.is_mac and 'dylib' or 'so')
 
       M.rust_tools.setup({
         -- The "server" property provided in rust-tools setup function are the
