@@ -15,7 +15,8 @@ function M.load()
     M.github_theme = m
     M.github_theme.setup({
         -- Theme style to use
-        theme_style = "dark",
+        -- theme_style = "dark",
+        theme_style = "light",
         -- Set the style of treesitter
         comment_style = "NONE",
         function_style = "NONE",

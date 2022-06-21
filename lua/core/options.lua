@@ -13,7 +13,7 @@ local options = {
     -- • catppuccin
     -- • vscode
     -- • github-theme
-    colorscheme = "catppuccin",
+    colorscheme = "github-theme",
     -- Whether the background is transparent
     -- • boolean
     transparent_background = false,
