@@ -1,5 +1,6 @@
 -- https://github.com/akinsho/toggleterm.nvim
 
+local aux = require("utils.api.aux")
 local mapping = require("core.mapping")
 
 local M = {
@@ -108,11 +109,13 @@ function M.wrapper_command()
     end
 
     M.toggleterm.term_toggle = function()
-        vim.cmd("exe v:count1.'ToggleTerm'")
+        -- FIX: https://github.com/akinsho/toggleterm.nvim/issues/97#issuecomment-1160323635
+        local count = vim.api.nvim_eval("v:count1")
+        aux.terminal_offset_run_command(string.format("exe %d.'ToggleTerm'", count))
     end
 
     M.toggleterm.toggle_all_term = function()
-        vim.cmd("ToggleTermToggleAll")
+        aux.terminal_offset_run_command("ToggleTermToggleAll")
     end
 end
 

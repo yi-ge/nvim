@@ -9,7 +9,6 @@ local packer_install_tbl = {
 	--]]
     ["wbthomason/packer.nvim"] = {}, -- package manager
     ["lewis6991/impatient.nvim"] = {}, -- speed up startup
-    ["nathom/filetype.nvim"] = {}, -- speed up startup
     ["rcarriga/nvim-notify"] = {}, -- fancy notification message
     --[[
 	=====================================
@@ -131,6 +130,7 @@ local packer_install_tbl = {
     ["github/copilot.vim"] = { -- AI smart completion
         disable = false,
         ptp = "viml",
+        ft = { "dap-repl" },
         event = { "InsertEnter" },
     },
     ["yi-ge/rust-tools.nvim"] = { -- Rust support
@@ -221,10 +221,6 @@ local packer_install_tbl = {
         ptp = "viml",
         ft = "py",
         event = { "InsertEnter" },
-    },
-    ["mattn/emmet-vim"] = { -- emmet abbreviation support
-        ptp = "viml",
-        ft = { "html", "javascript", "typescript", "vue", "xml", "jsx" },
     },
     ["rust-lang/rust.vim"] = { -- rust lang support
       ft = "rust"

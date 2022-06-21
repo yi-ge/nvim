@@ -3,6 +3,7 @@
 -- https://github.com/stevearc/aerial.nvim
 -- https://github.com/williamboman/nvim-lsp-installer
 
+local aux = require("utils.api.aux")
 local icons = require("utils.icons")
 local options = require("core.options")
 local register_buffer_key = require("core.plugins-mapping")
@@ -25,6 +26,7 @@ function M.load_lsp_config()
         gopls = require("configure.lsp.gopls"),
         pyright = require("configure.lsp.pyright"),
         rust_analyzer = require("configure.lsp.rust"),
+        emmet_ls = require("configure.lsp.emmet_ls"),
     }
 end
 
@@ -140,6 +142,24 @@ end
 function M.lsp_signature_help(_, result, ctx, config)
     -- Add file type for LSP signature help
     local bufnr, winner = vim.lsp.handlers.signature_help(_, result, ctx, config)
+
+    -- Put the signature floating window above the cursor
+    local current_cursor_line = vim.api.nvim_win_get_cursor(0)[1]
+    local ok, win_height = pcall(vim.api.nvim_win_get_height, winner)
+
+    if not ok then
+        return
+    end
+
+    if current_cursor_line > win_height + 2 then
+        vim.api.nvim_win_set_config(winner, {
+            anchor = "SW",
+            relative = "cursor",
+            row = 0,
+            col = -1,
+        })
+    end
+
     if bufnr and winner then
         vim.api.nvim_buf_set_option(bufnr, "filetype", config.filetype)
         return bufnr, winner
@@ -177,6 +197,198 @@ end
 function M.public_attach_callbackfn(client, bufnr)
     M.aerial.on_attach(client, bufnr)
     register_buffer_key(bufnr)
+end
+
+function M.register_buffer_key(bufnr)
+    mapping.register({
+        {
+            mode = { "n" },
+            lhs = "<leader>ca",
+            rhs = vim.lsp.buf.code_action,
+            options = { silent = true, buffer = bufnr },
+            description = "Show code action",
+        },
+        {
+            mode = { "n" },
+            lhs = "<leader>cn",
+            rhs = vim.lsp.buf.rename,
+            options = { silent = true, buffer = bufnr },
+            description = "Variable renaming",
+        },
+        {
+            mode = { "n" },
+            lhs = "<leader>cf",
+            rhs = vim.lsp.buf.formatting_sync,
+            options = { silent = true, buffer = bufnr },
+            description = "Format buffer",
+        },
+        {
+            mode = { "n" },
+            lhs = "gI",
+            rhs = function()
+                require("telescope.builtin").lsp_implementations()
+            end,
+            options = { silent = true, buffer = bufnr },
+            description = "Go to implementations",
+        },
+        {
+            mode = { "n" },
+            lhs = "gD",
+            rhs = function()
+                require("telescope.builtin").lsp_type_definitions()
+            end,
+            options = { silent = true, buffer = bufnr },
+            description = "Go to type definitions",
+        },
+        {
+            mode = { "n" },
+            lhs = "gd",
+            rhs = function()
+                require("telescope.builtin").lsp_definitions()
+            end,
+            options = { silent = true, buffer = bufnr },
+            description = "Go to definitions",
+        },
+        {
+            mode = { "n" },
+            lhs = "gr",
+            rhs = function()
+                require("telescope.builtin").lsp_references()
+            end,
+            options = { silent = true, buffer = bufnr },
+            description = "Go to references",
+        },
+        {
+            mode = { "n" },
+            lhs = "gh",
+            rhs = vim.lsp.buf.hover,
+            options = { silent = true, buffer = bufnr },
+            description = "Show help information",
+        },
+        {
+            mode = { "n" },
+            lhs = "go",
+            rhs = function()
+                require("telescope.builtin").diagnostics()
+            end,
+            options = { silent = true, buffer = bufnr },
+            description = "Show Workspace Diagnostics",
+        },
+        {
+            mode = { "n" },
+            lhs = "[g",
+            rhs = function()
+                vim.diagnostic.goto_prev({ float = { border = "rounded" } })
+            end,
+            options = { silent = true, buffer = bufnr },
+            description = "Jump to prev diagnostic",
+        },
+        {
+            mode = { "n" },
+            lhs = "]g",
+            rhs = function()
+                vim.diagnostic.goto_next({ float = { border = "rounded" } })
+            end,
+            options = { silent = true, buffer = bufnr },
+            description = "Jump to next diagnostic",
+        },
+        {
+            mode = { "i" },
+            lhs = "<c-j>",
+            rhs = function()
+                -- When the signature is visible, pressing <c-j> again will close the window
+                for _, opts in ipairs(aux.get_all_win_buf_ft()) do
+                    if opts.buf_ft == "lsp-signature-help" then
+                        vim.api.nvim_win_close(opts.win_id, false)
+                        return
+                    end
+                end
+                vim.lsp.buf.signature_help()
+            end,
+            options = { silent = true, buffer = bufnr },
+            description = "Toggle signature help",
+        },
+        {
+            mode = { "i", "n" },
+            lhs = "<c-f>",
+            rhs = function()
+                local scroll_floating_filetype = { "lsp-signature-help", "lsp-hover" }
+
+                for _, opts in ipairs(aux.get_all_win_buf_ft()) do
+                    if vim.tbl_contains(scroll_floating_filetype, opts.buf_ft) then
+                        local win_height = vim.api.nvim_win_get_height(opts.win_id)
+                        local cursor_line = vim.api.nvim_win_get_cursor(opts.win_id)[1]
+                        local buf_total_line = vim.api.nvim_buf_line_count(opts.buf_id)
+                        ---@diagnostic disable-next-line: redundant-parameter
+                        local win_last_line = vim.fn.line("w$", opts.win_id)
+
+                        if buf_total_line <= win_height or cursor_line == buf_total_line then
+                            vim.api.nvim_echo({ { "Can't scroll down", "MoreMsg" } }, false, {})
+                            return
+                        end
+
+                        vim.opt.scrolloff = 0
+                        if cursor_line < win_last_line then
+                            vim.api.nvim_win_set_cursor(opts.win_id, { win_last_line + 5, 0 })
+                        elseif cursor_line + 5 > buf_total_line then
+                            vim.api.nvim_win_set_cursor(opts.win_id, { buf_total_line, 0 })
+                        else
+                            vim.api.nvim_win_set_cursor(opts.win_id, { cursor_line + 5, 0 })
+                        end
+                        vim.opt.scrolloff = M.opt_scrolloff
+
+                        return
+                    end
+                end
+
+                local map = "<c-f>"
+                local key = vim.api.nvim_replace_termcodes(map, true, false, true)
+                vim.api.nvim_feedkeys(key, "n", true)
+            end,
+            options = { silent = true, buffer = bufnr },
+            description = "Scroll down floating window",
+        },
+        {
+            mode = { "i", "n" },
+            lhs = "<c-b>",
+            rhs = function()
+                local scroll_floating_filetype = { "lsp-signature-help", "lsp-hover" }
+
+                for _, opts in ipairs(aux.get_all_win_buf_ft()) do
+                    if vim.tbl_contains(scroll_floating_filetype, opts.buf_ft) then
+                        local win_height = vim.api.nvim_win_get_height(opts.win_id)
+                        local cursor_line = vim.api.nvim_win_get_cursor(opts.win_id)[1]
+                        local buf_total_line = vim.api.nvim_buf_line_count(opts.buf_id)
+                        ---@diagnostic disable-next-line: redundant-parameter
+                        local win_first_line = vim.fn.line("w0", opts.win_id)
+
+                        if buf_total_line <= win_height or cursor_line == 1 then
+                            vim.api.nvim_echo({ { "Can't scroll up", "MoreMsg" } }, false, {})
+                            return
+                        end
+
+                        vim.opt.scrolloff = 0
+                        if cursor_line > win_first_line then
+                            vim.api.nvim_win_set_cursor(opts.win_id, { win_first_line - 5, 0 })
+                        elseif cursor_line - 5 < 1 then
+                            vim.api.nvim_win_set_cursor(opts.win_id, { 1, 0 })
+                        else
+                            vim.api.nvim_win_set_cursor(opts.win_id, { cursor_line - 5, 0 })
+                        end
+                        vim.opt.scrolloff = M.opt_scrolloff
+
+                        return
+                    end
+                end
+
+                local map = "<c-b>"
+                local key = vim.api.nvim_replace_termcodes(map, true, false, true)
+                vim.api.nvim_feedkeys(key, "n", true)
+            end,
+            options = { silent = true, buffer = bufnr },
+            description = "Scroll up floating window",
+        },
+    })
 end
 
 return M

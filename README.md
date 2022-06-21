@@ -36,7 +36,6 @@
   - [Surround](#Surround)
   - [Comment](#Comment)
   - [Switch](#Switch)
-  - [Emment](#Emment)
   - [Motions](#Motions)
   - [Drawing](#Drawing)
   - [Code-image](#Code-image)
@@ -621,7 +620,8 @@ This functionality is provided by [nvim-spectre](https://github.com/nvim-pack/nv
 ```
 -  "n" <leader>rp  :  Replace characters in all files in the current workspace
 -  "n" <leader>rf  :  Replace all characters in the current file
--  "n" <leader>rw  :  Replace the character under the cursor in all files under the current workspace
+-  "n" <leader>rwf :  Replace the character under the cursor in the current file
+-  "n" <leader>rwp :  Replace the character under the cursor in all files under the current workspace
 ```
 
 ### Session
@@ -763,12 +763,6 @@ variable_example => variableExample
 ```
 
 As you can see, this feature is supported without the [switch](https://github.com/AndrewRadev/switch.vim) plugin.
-
-### Emment
-
-Use `<c-e>,` to quickly expand emment fragments.
-
-`<c-e>` has some other functions, but it only works with certain types of files:
 
 ### Motions
 

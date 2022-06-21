@@ -111,7 +111,7 @@ local settings = {
         -- Enable global status bar
         laststatus = 3,
         -- After turning on the global status bar, we should set a more obvious separator
-        fillchars = "vert:┃,horiz:━,verthoriz:╋,horizup:┻,horizdown:┳,vertleft:┫,vertright:┣",
+        fillchars = "vert:┃,horiz:━,verthoriz:╋,horizup:┻,horizdown:┳,vertleft:┫,vertright:┣,eob: ",
     },
     disable_builtin_plugins = {
         -- "netrw",
@@ -139,13 +139,18 @@ local settings = {
 -- vim.opt.listchars:append("eol:↴")
 -- vim.opt.listchars:append("tab:↹ ")
 
-vim.opt.shortmess:append("sI") -- reduce the display of <c-g>
 -- Reduce the display of <c-g>
 vim.opt.shortmess:append("sI")
 -- Allow h and l newlines
 vim.opt.whichwrap:append("<>[]hl")
+
 -- Remove auto-comments
-vim.opt.formatoptions = vim.opt.formatoptions - { "c", "r", "o" }
+vim.api.nvim_create_autocmd({ "BufEnter" }, {
+    pattern = "*",
+    callback = function()
+        vim.opt.formatoptions = vim.opt.formatoptions - { "c", "r", "o" }
+    end,
+})
 
 for prefix, tab in pairs(settings) do
     if prefix ~= "disable_builtin_plugins" then
