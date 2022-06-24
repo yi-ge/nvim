@@ -18,6 +18,13 @@ local function register_buffer_key(bufnr)
     },
     {
       mode = { "n" },
+      lhs = "<leader>ce",
+      rhs = vim.lsp.diagnostic.open_float,
+      options = { silent = true, buffer = bufnr },
+      description = "Show line diagnostics",
+    },
+    {
+      mode = { "n" },
       lhs = "<leader>cf",
       rhs = vim.lsp.buf.formatting_sync,
       options = { silent = true, buffer = bufnr },
