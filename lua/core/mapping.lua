@@ -32,11 +32,11 @@ mapping.register({
         description = "Escape terminal insert mode",
     },
     {
-      mode = { "t" },
-      lhs = "jj",
-      rhs = "<c-\\><c-n>",
-      options = { silent = true },
-      description = "Escape terminal insert mode",
+        mode = { "t" },
+        lhs = "jj",
+        rhs = "<c-\\><c-n>",
+        options = { silent = true },
+        description = "Escape terminal insert mode",
     },
     {
         mode = { "n" },

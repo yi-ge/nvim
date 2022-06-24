@@ -19,7 +19,9 @@ local function register_buffer_key(bufnr)
     {
       mode = { "n" },
       lhs = "<leader>ce",
-      rhs = vim.lsp.diagnostic.open_float,
+      rhs = function()
+        vim.lsp.diagnostic.open_float()
+      end,
       options = { silent = true, buffer = bufnr },
       description = "Show line diagnostics",
     },
