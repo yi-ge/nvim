@@ -27,6 +27,7 @@ function M.load_lsp_config()
         pyright = require("configure.lsp.pyright"),
         rust_analyzer = require("configure.lsp.rust"),
         emmet_ls = require("configure.lsp.emmet_ls"),
+        prismals = require("configure.lsp.prismals"),
     }
 end
 
